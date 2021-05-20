@@ -43,12 +43,12 @@ function initialValues(name, lastname) {
     return {
         name: name || "",
         lastname: lastname || "",
-    }
+    };
 }
 
 function validationSchema() {
     return {
         name: Yup.string().required(true),
         lastname: Yup.string().required(true),
-    }
+    };
 }
