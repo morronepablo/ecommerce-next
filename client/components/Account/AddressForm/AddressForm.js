@@ -7,7 +7,7 @@ import { createAddressApi } from "../../../api/address";
 import { toast } from 'react-toastify';
 
 export default function AddressForm(props) {
-    const { setShowModal } = props;
+    const { setShowModal, setReloadAddresses } = props;
     const [loading, setLoading] = useState(false);
     const { auth, logout } = useAuth();
 
@@ -32,6 +32,7 @@ export default function AddressForm(props) {
             setLoading(false);
         } else {
             formik.resetForm();
+            setReloadAddresses(true);
             setLoading(false);
             setShowModal(false);
         }
