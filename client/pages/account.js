@@ -8,7 +8,7 @@ import ChangeNameForm from "../components/Account/ChangeNameForm";
 import ChangeEmailForm from "../components/Account/ChangeEmailForm";
 import ChangePasswordForm from "../components/Account/ChangePasswordForm";
 import BasicModal from "../components/Modal/BasicModal";
-import AddresForm from "../components/Account/AddressForm";
+import AddressForm from "../components/Account/AddressForm";
 
 export default function Account() {
     const [user, setUser] = useState(undefined);
@@ -58,7 +58,7 @@ function Addresses() {
 
     const openModal = (title) => {
         setTitleModal(title);
-        setFormModal(<AddresForm />);
+        setFormModal(<AddressForm setShowModal={setShowModal} />);
         setShowModal(true);
     }
 
