@@ -1,33 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { Grid, Image, Icon, Button } from "semantic-ui-react";
+import React, { useState, useEffect } from "react";
+import { Grid, Image, Icon, Button, GridColumn } from "semantic-ui-react";
 import { size } from "lodash";
+import classNames from "classnames";
+import useAuth from "../../../hooks/useAuth";
+import { isFavoriteApi } from "../../../api/favorite";
 
 export default function HeaderGame(props) {
     const { game } = props;
     const { poster, title } = game;
-    console.log(game);
 
     return (
         <Grid className="header-game">
-            <Grid.Column mobile={16} tablet={6} computer    ={5}>
+            <Grid.Column mobile={16} tablet={6} computer={5}>
                 <Image src={poster.url} alt={title} fluid />
             </Grid.Column>
-            <Grid.Column mobile={16} tablet={10} computer   ={11}>
+            <Grid.Column mobile={16} tablet={10} computer={11}>
                 <Info game={game} />
             </Grid.Column>
         </Grid>
-    )
+    );
 }
 
-function Info (props) {
+function Info(props) {
     const { game } = props;
     const { title, summary, price, discount } = game;
+    const [isFavorite, setIsFavorite] = useState(false);
+    const {auth, logout} = useAuth();
+
+
+    useEffect(() => {
+        (async () => {
+            const response = await isFavoriteApi(auth.idUser, game.id, logout);
+            if(size(response) > 0) setIsFavorite(true);
+            else setIsFavorite(false);
+        })();
+    }, [game]);
+
+    const addFavorite = () => {
+        console.log("Añadir a favoritos");
+    }
+
+    const deleteFavorite = () => {
+        console.log("Eliminar de favoritos");
+    }
 
     return (
         <>
             <div className="header-game__title">
                 {title}
-                <Icon name="heart outline" link />
+                <Icon 
+                    name={isFavorite ? "heart" : "heart outline"} 
+                    className={classNames({
+                        like: isFavorite,
+                    })} link 
+                        onClick={isFavorite ? deleteFavorite : addFavorite}
+                />
             </div>
             <div className="header-game__delivery">Entrega en 24/48hs.</div>
             <div 
@@ -39,7 +66,7 @@ function Info (props) {
                     <p>Precio de venta al publico: $ {price}</p>
                     <div className="header-game__buy-price-actions">
                         <p>-{discount}%</p>
-                        <p>$ {price - Math.floor(price * discount) / 100}</p>
+                        <p> ${price - Math.floor(price * discount) / 100}</p>
                     </div>
                 </div>
                 <Button className="header-game__buy-btn">Comprar</Button>
