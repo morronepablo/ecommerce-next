@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import AuthContext from "../context/AuthContext";
 import CartContext from "../context/CartContext";
 import { setToken, getToken, removeToken } from "../api/token";
-import { getProductsCart, addProductCart } from "../api/cart";
+import { getProductsCart, addProductCart, countProductsCart } from "../api/cart";
 import "../scss/global.scss";
 import 'semantic-ui-css/semantic.min.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,6 +15,8 @@ import "slick-carousel/slick/slick-theme.css";
 export default function MyApp({ Component, pageProps }) {
   const [auth, setAuth] = useState(undefined);
   const [realoadUser, setReloadUser] = useState(false);
+  const [totalProductsCart, setTotalProductsCart] = useState(0);
+  const [reloadCart, setReloadCart] = useState(false);
   const router = useRouter();
   
   useEffect(() => {
@@ -29,6 +31,11 @@ export default function MyApp({ Component, pageProps }) {
     }
     setReloadUser(false);
   }, [realoadUser]);
+
+  useEffect(() => {
+    setTotalProductsCart(countProductsCart());
+    setReloadCart(false);
+  }, [reloadCart, auth]);
 
   const login = (token) => {
     setToken(token);
@@ -50,6 +57,7 @@ export default function MyApp({ Component, pageProps }) {
     const token = getToken();
     if(token) {
       addProductCart(product);
+      setReloadCart(true);
     } else {
       toast.warning("Para comprar un juego tienes que iniciar sesión");
     }
@@ -67,13 +75,13 @@ export default function MyApp({ Component, pageProps }) {
 
   const cartData = useMemo(
     () => ({
-      productsCart: 0,
+      productsCart: totalProductsCart,
       addProductCart: (product) => addProduct(product),
       getProductsCart: getProductsCart,
       removeProductCart: () => null,
       removeAllProductsCart: () => null,
     }),
-    []
+    [totalProductsCart]
   );
 
   if(auth === undefined) return null;
