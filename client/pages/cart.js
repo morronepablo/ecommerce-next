@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import BasicLayout from "../layouts/BasicLayout";
 import { getGameByUrlApi } from "../api/game";
 import useCart from "../hooks/useCart";
+import SummaryCart from "../components/Cart/SummaryCart";
 
 export default function Cart() {
     const { getProductsCart } = useCart();
@@ -21,7 +22,7 @@ function EmptyCart() {
 function FullCart(props) {
     const { products } = props;
     const [productsData, setProductsData] = useState(null);
-    console.log(productsData);
+    
     
     useEffect(() => {
         (async () => {
@@ -36,7 +37,7 @@ function FullCart(props) {
 
     return (
         <BasicLayout className="empty-cart">
-            <h2>carrito</h2>
+            <SummaryCart products={productsData} />
         </BasicLayout>
     );
 }
