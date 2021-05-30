@@ -1,7 +1,4 @@
 'use strict';
-
-const { default: createStrapi } = require("strapi");
-
 const stripe = require("stripe")("sk_test_51IwCe3L6LVvPXi7r7IoNlxiLPZ8DVgoEPaOKLGKAya6EUR7WyDSGqxpxOGw18CPwuc3SwARsiAwx2biH365nk24I00LneIGihG");
 
 /**
@@ -17,15 +14,15 @@ module.exports = {
       totalPayment = totalPayment + product.price;
     });
 
-    const charge = await stripe.charge.create({
+    const charge = await stripe.charges.create({
       amount: totalPayment * 100,
       currency: "usd",
       source: token.id,
       description: `ID Usuario: ${idUser}`,
     });
 
-    const createOrder = [];
-    for await(const product of products) {
+    const createOrder = []  ;
+    for await (const product of products) {
       const data = {
         game: product.id,
         user: idUser,
@@ -33,7 +30,7 @@ module.exports = {
         idPayment: charge.id,
         addressShipping,
       };
-      const validData = await createStrapi.entityValidator.validateEntity(
+      const validData = await strapi.entityValidator.validateEntityUpdate(
         strapi.models.order,
         data
       );
